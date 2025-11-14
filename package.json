@@ -1,0 +1,112 @@
+{
+  "name": "ai-pipeline-extension",
+  "displayName": "AI Pipeline Ticket Builder",
+  "description": "VS Code/Cursor extension that plans features using full repository context.",
+  "version": "0.0.3",
+  "publisher": "Hatish",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/ai-pipeline-extension.git"
+  },
+  "main": "./dist/extension.js",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:aiPipeline.generateTicket",
+    "onCommand:aiPipeline.rebuildIndex"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "aiPipeline.generateTicket",
+        "title": "AI Pipeline: Generate Ticket"
+      },
+      {
+        "command": "aiPipeline.rebuildIndex",
+        "title": "AI Pipeline: Rebuild Repo Index"
+      }
+    ],
+    "configuration": {
+      "title": "AI Pipeline",
+      "properties": {
+        "aiPipeline.openaiApiKey": {
+          "type": "string",
+          "default": "",
+          "description": "OpenAI API key used for chat and embedding requests. Leave blank to use the OPENAI_API_KEY environment variable."
+        },
+        "aiPipeline.model": {
+          "type": "string",
+          "default": "gpt-4.1",
+          "description": "Chat model name used for planning conversations."
+        },
+        "aiPipeline.embeddingModel": {
+          "type": "string",
+          "default": "text-embedding-3-large",
+          "description": "Embedding model name used when indexing repository chunks."
+        },
+        "aiPipeline.contextChunkSize": {
+          "type": "number",
+          "default": 800,
+          "minimum": 100,
+          "description": "Approximate token count (characters ×4) for each indexed chunk."
+        },
+        "aiPipeline.contextChunkOverlap": {
+          "type": "number",
+          "default": 120,
+          "minimum": 0,
+          "description": "Number of characters to overlap between adjacent chunks."
+        },
+        "aiPipeline.ignoredGlobs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Additional glob patterns to exclude from indexing (applied alongside .gitignore/.contextignore)."
+        },
+        "aiPipeline.embeddingBatchSize": {
+          "type": "number",
+          "default": 64,
+          "minimum": 1,
+          "description": "Number of chunks embedded per API request."
+        },
+        "aiPipeline.maxConcurrentWorkers": {
+          "type": "number",
+          "default": 4,
+          "minimum": 1,
+          "description": "Maximum number of files to analyze in parallel during indexing."
+        },
+        "aiPipeline.memoryBudgetMb": {
+          "type": "number",
+          "default": 0,
+          "minimum": 0,
+          "description": "Soft memory budget (in MB) for file processing. 0 uses an automatic value based on system RAM."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./tsconfig.json",
+    "lint": "eslint \"src/**/*.{ts,tsx}\"",
+    "build": "npm run compile"
+  },
+  "dependencies": {
+    "@langchain/openai": "^0.0.14",
+    "glob": "^10.3.10",
+    "langchain": "^0.1.34",
+    "typescript": "^5.3.3",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.1.0",
+    "@types/node": "^20.10.6",
+    "@types/vscode": "^1.85.0",
+    "esbuild": "^0.19.11",
+    "eslint": "^8.57.1"
+  }
+}
